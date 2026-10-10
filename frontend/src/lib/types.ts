@@ -53,13 +53,15 @@ export const DEFAULT_CONFIG: ServiceConfig = {
   monthly_min: 100,
 };
 
-// One cut for the lot: base + per-acre beyond the included amount, plus the easement fee
-// on small lots (under 0.25 ac). Monthly = 3 cuts, with a flat small-lot rate under 0.2 ac.
+// One cut for the lot: base + per-acre beyond the included amount, plus an easement charge
+// that scales with lot size (flat fee up to the included acreage, then grows gently).
+// Monthly = 3 cuts, with a flat small-lot rate under 0.2 ac.
 export function cutPrice(config: ServiceConfig, acres: number): number {
   const billable = Math.max(0, acres - config.included_acres);
-  let cut = Math.max(config.min_price, config.base_price + config.per_acre * billable);
-  if (acres < 0.25) cut += config.easement_fee;
-  return Math.round(cut);
+  const easement = config.easement_fee * Math.max(1, 1 + (acres - config.included_acres));
+  return Math.round(
+    Math.max(config.min_price, config.base_price + config.per_acre * billable) + easement
+  );
 }
 
 export function monthlyPrice(config: ServiceConfig, cut: number, acres: number): number {

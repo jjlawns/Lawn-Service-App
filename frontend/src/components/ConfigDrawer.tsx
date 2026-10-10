@@ -200,7 +200,8 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
             </div>
             <p className="text-xs leading-relaxed text-[#5C6F64]">
               Cut price = max(minimum, base + per-acre × acres beyond the included amount),
-              plus the easement fee on lots under 0.25 acre. Monthly service bills 3 cuts
+              plus an easement charge that grows with lot size ($5 up to a quarter acre,
+              then a little more per extra acre). Monthly service bills 3 cuts
               per month; lots under 0.2 acre pay the flat monthly minimum. One-time
               cleanups price at 1.5× a cut. Overgrown first cuts bill 2–4× a cut
               depending on time since last mow. Port St. Lucie cuts add $5 beyond 10

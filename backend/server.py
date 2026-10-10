@@ -120,8 +120,8 @@ class Quote(QuoteRequestBody):
 def cut_estimate(cfg: dict, acres: float) -> float:
     billable = max(0.0, acres - cfg["included_acres"])
     cut = max(cfg["min_price"], cfg["base_price"] + cfg["per_acre"] * billable)
-    if acres < 0.25:
-        cut += cfg["easement_fee"]  # small lots include county easement upkeep
+    # Easement upkeep scales with lot size: flat fee up to the included acreage, then grows.
+    cut += cfg["easement_fee"] * max(1.0, 1.0 + (acres - cfg["included_acres"]))
     return float(math.floor(cut + 0.5))
 
 
