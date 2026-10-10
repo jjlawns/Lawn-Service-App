@@ -38,7 +38,7 @@ export function ServiceAreas({ config }: { config: ServiceConfig }) {
           transition={{ duration: 0.6, delay: 0.08 }}
           className="mt-4 max-w-2xl font-heading text-3xl font-medium tracking-[-0.02em] text-[#F3F7F4] sm:text-4xl"
         >
-          Every zip we mow, from Fort Pierce to North Vero.
+          Every address in St. Lucie County, plus North Vero.
         </motion.h2>
 
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">

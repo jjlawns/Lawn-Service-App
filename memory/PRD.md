@@ -10,7 +10,7 @@ User choices: zip-code-list service area (St. Lucie County + northernmost Vero B
 
 ## Architecture
 - FastAPI + MongoDB backend (`backend/server.py`), React 19 + Vite + Tailwind v4 frontend
-- Address verification: US Census Bureau geocoder (`geocoding.geo.census.gov`, free, no key) → zip + lat/lng
+- Address verification: ArcGIS World Geocoder (free, no key) with county-scoped retry for city-less input; Census geocoder as fallback. In-area = county "St. Lucie County" OR zip in list (covers every St. Lucie County address + North Vero Beach zips)
 - Acreage: Florida Dept. of Revenue statewide parcel service (ArcGIS FeatureServer, county property-appraiser tax-roll data) — nearest parcel centroid to geocoded point, `LND_SQFOOT / 43560`
 - Results cached in `properties` collection (address_key); service config in `config` collection; leads in `quotes`
 - Design: obsidian-forest (#0B1510) + emerald (#10B981), Lora/DM Sans/IBM Plex Mono, motion/react reveals, lenis smooth scroll

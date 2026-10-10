@@ -22,6 +22,7 @@ from lib.db import client, db, ensure_indexes
 logger = logging.getLogger(__name__)
 
 CENSUS_GEOCODER_URL = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress"
+ARCGIS_GEOCODER_URL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates"
 FDOR_PARCEL_URL = (
     "https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/"
     "Florida_Statewide_Parcel_Centroid_Version/FeatureServer/0/query"
@@ -80,6 +81,7 @@ class AddressCheckResult(BaseModel):
     matched_address: str | None = None
     city: str | None = None
     zip: str | None = None
+    county: str | None = None
     acres: float | None = None
     acres_source: str | None = None
     estimate_cut: float | None = None
@@ -124,7 +126,43 @@ def haversine_m(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     return 2 * r * math.asin(math.sqrt(a))
 
 
-async def _geocode_once(address: str) -> dict | None:
+async def _arcgis_geocode(address: str) -> dict | None:
+    try:
+        async with httpx.AsyncClient(timeout=12, headers=HTTP_HEADERS) as http:
+            resp = await http.get(
+                ARCGIS_GEOCODER_URL,
+                params={
+                    "SingleLine": address,
+                    "f": "json",
+                    "maxLocations": 1,
+                    "outFields": "PlaceName,Subregion,Region,Postal",
+                },
+            )
+            resp.raise_for_status()
+            candidates = resp.json().get("candidates", [])
+            if not candidates:
+                return None
+            c = candidates[0]
+            if c.get("score", 0) < 80:
+                return None
+            attrs = c.get("attributes", {})
+            if attrs.get("Region") not in ("Florida", "FL"):
+                return None
+            parts = [p.strip() for p in (c.get("address") or "").split(",")]
+            return {
+                "matched_address": c.get("address"),
+                "city": attrs.get("PlaceName") or (parts[1] if len(parts) > 2 else None),
+                "zip": attrs.get("Postal") or None,
+                "county": attrs.get("Subregion") or None,
+                "lat": c["location"]["y"],
+                "lng": c["location"]["x"],
+            }
+    except Exception as exc:
+        logger.warning("arcgis geocode failed for %r: %s", address, exc)
+        return None
+
+
+async def _census_geocode(address: str) -> dict | None:
     try:
         async with httpx.AsyncClient(timeout=12, headers=HTTP_HEADERS) as http:
             resp = await http.get(
@@ -142,22 +180,28 @@ async def _geocode_once(address: str) -> dict | None:
                 "matched_address": m.get("matchedAddress"),
                 "city": comps.get("city"),
                 "zip": comps.get("zip"),
+                "county": None,
                 "lat": coords.get("y"),
                 "lng": coords.get("x"),
             }
     except Exception as exc:
-        logger.warning("geocode failed for %r: %s", address, exc)
+        logger.warning("census geocode failed for %r: %s", address, exc)
         return None
 
 
 async def geocode(address: str) -> dict | None:
-    # Customers inside the county rarely type the city — retry with county context.
-    attempts = [address]
-    if not ZIP_RE.search(address):
-        attempts.append(f"{address}, St. Lucie County, FL")
-        attempts.append(f"{address}, FL")
+    # Local customers rarely type the city — try county-scoped forms first, statewide last.
+    attempts = (
+        [address]
+        if ZIP_RE.search(address)
+        else [f"{address}, St. Lucie County, FL", f"{address}, FL", address]
+    )
     for attempt in attempts:
-        result = await _geocode_once(attempt)
+        result = await _arcgis_geocode(attempt)
+        if result:
+            return result
+    for attempt in attempts:
+        result = await _census_geocode(attempt)
         if result:
             return result
     return None
@@ -251,7 +295,12 @@ async def check_address(body: AddressCheckRequest):
     typed_zip = ZIP_RE.search(body.address)
     geo = await geocode(body.address)
     zipcode = (geo or {}).get("zip") or (typed_zip.group(1) if typed_zip else None)
-    in_area = bool(zipcode and zipcode in cfg["zips"])
+    county = (geo or {}).get("county")
+    # Every St. Lucie County address qualifies, plus the listed North Vero Beach zips.
+    in_area = bool(
+        (county and "st. lucie" in county.lower())
+        or (zipcode and zipcode in cfg["zips"])
+    )
 
     acres = None
     if in_area and geo and geo.get("lat") is not None:
@@ -262,6 +311,7 @@ async def check_address(body: AddressCheckRequest):
         matched_address=geo["matched_address"] if geo else None,
         city=geo["city"] if geo else None,
         zip=zipcode,
+        county=county,
         acres=acres,
         acres_source="county" if acres else None,
         estimate_cut=cut_estimate(cfg, acres) if acres else None,
