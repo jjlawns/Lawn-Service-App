@@ -7,6 +7,7 @@ export interface ServiceConfig {
   included_acres: number;
   min_price: number;
   easement_fee: number;
+  monthly_min: number;
 }
 
 export interface AddressCheckResult {
@@ -42,11 +43,12 @@ export const DEFAULT_CONFIG: ServiceConfig = {
     "34985", "34986", "34987", "34988", "34990",
     "32960", "32962", "32963", "32967",
   ],
-  base_price: 35,
+  base_price: 28,
   per_acre: 70,
   included_acres: 0.25,
-  min_price: 35,
+  min_price: 28,
   easement_fee: 5,
+  monthly_min: 100,
 };
 
 // One cut for the lot (sub-acre lots include county easement upkeep); monthly plan = 3
@@ -59,8 +61,8 @@ export function cutPrice(config: ServiceConfig, acres: number): number {
   return Math.round(cut);
 }
 
-export function monthlyPrice(cut: number): number {
-  return cut * 3;
+export function monthlyPrice(config: ServiceConfig, cut: number): number {
+  return Math.max(config.monthly_min, cut * 3);
 }
 
 export function onetimePrice(cut: number): number {

@@ -25,6 +25,7 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
   const [minPrice, setMinPrice] = useState(String(config.min_price));
   const [includedAcres, setIncludedAcres] = useState(String(config.included_acres));
   const [easementFee, setEasementFee] = useState(String(config.easement_fee));
+  const [monthlyMin, setMonthlyMin] = useState(String(config.monthly_min));
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
       setMinPrice(String(config.min_price));
       setIncludedAcres(String(config.included_acres));
       setEasementFee(String(config.easement_fee));
+      setMonthlyMin(String(config.monthly_min));
     }
   }, [open, config]);
 
@@ -49,6 +51,7 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
         min_price: Number(minPrice),
         included_acres: Number(includedAcres),
         easement_fee: Number(easementFee),
+        monthly_min: Number(monthlyMin),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["config"] });
@@ -65,7 +68,8 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
     Number(perAcre) >= 0 &&
     Number(minPrice) > 0 &&
     Number(includedAcres) >= 0 &&
-    Number(easementFee) >= 0;
+    Number(easementFee) >= 0 &&
+    Number(monthlyMin) > 0;
 
   return (
     <>
@@ -179,12 +183,27 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
                   className="border-[#1E3328] bg-[#122019] text-[#F3F7F4]"
                 />
               </div>
+              <div className="grid gap-2">
+                <Label htmlFor="cfg-monthly-min" className="text-[#A2B4AA]">
+                  Monthly minimum ($)
+                </Label>
+                <Input
+                  id="cfg-monthly-min"
+                  data-testid="config-monthly-min-input"
+                  type="number"
+                  min={1}
+                  value={monthlyMin}
+                  onChange={(e) => setMonthlyMin(e.target.value)}
+                  className="border-[#1E3328] bg-[#122019] text-[#F3F7F4]"
+                />
+              </div>
             </div>
             <p className="text-xs leading-relaxed text-[#5C6F64]">
               Cut price = max(minimum, base + per-acre × acres beyond the included amount),
               plus the easement fee on lots under 1 acre. Monthly service bills 3 cuts per
-              month; one-time cleanups price at 1.5× a cut. Overgrown first cuts bill 2–4×
-              a cut depending on time since last mow.
+              month and never drops below the monthly minimum; one-time cleanups price at
+              1.5× a cut. Overgrown first cuts bill 2–4× a cut depending on time since
+              last mow.
             </p>
             <Button
               data-testid="config-save-btn"

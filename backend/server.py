@@ -39,11 +39,12 @@ DEFAULT_CONFIG = {
         "34985", "34986", "34987", "34988", "34990",
         "32960", "32962", "32963", "32967",
     ],
-    "base_price": 35.0,
+    "base_price": 28.0,
     "per_acre": 70.0,
     "included_acres": 0.25,
-    "min_price": 35.0,
+    "min_price": 28.0,
     "easement_fee": 5.0,
+    "monthly_min": 100.0,
 }
 
 
@@ -56,6 +57,7 @@ class ServiceConfig(BaseModel):
     included_acres: float
     min_price: float
     easement_fee: float
+    monthly_min: float
 
 
 class ServiceConfigUpdate(BaseModel):
@@ -66,6 +68,7 @@ class ServiceConfigUpdate(BaseModel):
     included_acres: float = Field(ge=0)
     min_price: float = Field(gt=0)
     easement_fee: float = Field(ge=0)
+    monthly_min: float = Field(gt=0)
 
 
 class AddressCheckRequest(BaseModel):

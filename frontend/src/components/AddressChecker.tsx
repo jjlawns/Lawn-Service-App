@@ -58,7 +58,7 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
   const cut = cutPrice(config, acres);
   const growthMult = OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.multiplier ?? 1;
   const growthFee = overgrowthFee(cut, growthMult);
-  const monthly = monthlyPrice(cut);
+  const monthly = monthlyPrice(config, cut);
   const price = plan === "monthly" ? monthly + growthFee : onetimePrice(cut) + growthFee;
   const fillPct = ((acres - MIN_ACRES) / (MAX_ACRES - MIN_ACRES)) * 100;
 
