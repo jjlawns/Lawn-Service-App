@@ -1,0 +1,285 @@
+{
+  "project_name": "Verdant Coast Turf & Grounds",
+  "brand_identity": {
+    "name": "Verdant Coast Turf & Grounds (VERDANT COAST)",
+    "tagline": "Architectural Turf & Coastal Estate Lawn Care",
+    "location_focus": "St. Lucie County & North Vero Beach, Florida",
+    "service_zips": [
+      "34945", "34946", "34947", "34948", "34949", "34950", "34951",
+      "34952", "34953", "34954", "34981", "34982", "34983", "34984",
+      "34985", "34986", "34987", "34988", "34990", "32960", "32962", "32963", "32967"
+    ],
+    "phone": "(772) 882-9420",
+    "phone_display": "(772) 882-9420",
+    "logo_svg_concept": "<svg viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg' class='w-8 h-8 text-emerald-400'><path d='M24 4L38 12V36L24 44L10 36V12L24 4Z' stroke='currentColor' stroke-width='2' stroke-linejoin='round'/><path d='M24 14V34M16 26L24 18L32 26' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><circle cx='24' cy='24' r='3' fill='currentColor'/></svg>",
+    "vibe": "Architectural botanical precision meets Florida sun-drenched coastal luxury. High-end estate care, razor-sharp striping, organic soil science, zero AI-slop."
+  },
+  "entry_surfaces": {
+    "/": "split hero — brand kinetic reveal + instant zip & acreage quote engine left, interactive coastal turf estate visual + live price tier right"
+  },
+  "colors": {
+    "surfaces": [
+      {
+        "name": "page",
+        "kind": "solid",
+        "bg": "#0B1510",
+        "on_bg": "#F3F7F4",
+        "on_bg_muted": "#A2B4AA",
+        "roles": {
+          "link": "#34D399",
+          "error": "#F87171",
+          "success": "#34D399"
+        }
+      },
+      {
+        "name": "panel",
+        "kind": "solid",
+        "bg": "#122019",
+        "on_bg": "#F3F7F4",
+        "on_bg_muted": "#8EA699",
+        "roles": {
+          "link": "#34D399",
+          "error": "#F87171",
+          "success": "#34D399"
+        }
+      },
+      {
+        "name": "card_elevated",
+        "kind": "solid",
+        "bg": "#172A21",
+        "on_bg": "#FFFFFF",
+        "on_bg_muted": "#9CB5A7",
+        "roles": {
+          "link": "#34D399",
+          "error": "#F87171",
+          "success": "#34D399"
+        }
+      },
+      {
+        "name": "inverse",
+        "kind": "solid",
+        "bg": "#F5F3EC",
+        "on_bg": "#0D1B13",
+        "on_bg_muted": "#3D4F44",
+        "roles": {
+          "link": "#047857",
+          "error": "#B91C1C",
+          "success": "#047857"
+        }
+      },
+      {
+        "name": "badge_service_in",
+        "kind": "solid",
+        "bg": "#064E3B",
+        "on_bg": "#D1FAE5",
+        "on_bg_muted": "#A7F3D0"
+      },
+      {
+        "name": "badge_service_out",
+        "kind": "solid",
+        "bg": "#7F1D1D",
+        "on_bg": "#FEE2E2",
+        "on_bg_muted": "#FECACA"
+      },
+      {
+        "name": "hero",
+        "kind": "image",
+        "contrast_against": "#08100C",
+        "guarantee": "scrim: linear-gradient(to right, rgba(11,21,16,0.95) 0%, rgba(11,21,16,0.8) 50%, rgba(11,21,16,0.4) 100%)",
+        "on_bg": "#F3F7F4",
+        "on_bg_muted": "#A2B4AA",
+        "roles": {
+          "link": "#34D399",
+          "error": "#F87171",
+          "success": "#34D399"
+        }
+      }
+    ],
+    "accent": "#10B981",
+    "on_accent": "#042F24",
+    "accent_warm": "#EAB308",
+    "on_accent_warm": "#422006",
+    "border_subtle": "#1E3328",
+    "border_focus": "#34D399"
+  },
+  "typography": {
+    "font_family_heading": "Lora Variable",
+    "font_family_sans": "DM Sans Variable",
+    "font_family_mono": "IBM Plex Mono",
+    "css_import_heading": "@import \"@fontsource-variable/lora\";",
+    "css_import_sans": "@import \"@fontsource-variable/dm-sans\";",
+    "scale_px": {
+      "display": 60,
+      "h1": 48,
+      "h2": 36,
+      "h3": 24,
+      "body": 16,
+      "caption": 14
+    },
+    "letter_spacing": {
+      "display": "-0.03em",
+      "h1": "-0.025em",
+      "h2": "-0.02em",
+      "label": "0.15em",
+      "body": "0.01em"
+    }
+  },
+  "layouts": {
+    "mobile_first": true,
+    "header": {
+      "style": "Crystal Glass Sticky Header",
+      "classes": "sticky top-0 z-50 backdrop-blur-xl bg-[#0B1510]/80 border-b border-[#1E3328]/80 py-4 px-4 sm:px-8",
+      "elements": [
+        "Brand Logo SVG + 'VERDANT COAST' in Serif uppercase",
+        "Service Status Indicator: 'St. Lucie & North Vero Service Active'",
+        "Direct Phone Link: (772) 882-9420 with pulse badge",
+        "Instant Check CTA button: 'Estimate Yard'"
+      ]
+    },
+    "hero_section": {
+      "type": "Kinetic Asymmetric Split Hero with Live Tooling",
+      "left_col": {
+        "span": "col-span-12 lg:col-span-7",
+        "content": [
+          "Overline: 'ESTATE TURF & LAWN MANAGEMENT / ST. LUCIE & VERO BEACH'",
+          "H1: 'Precision Turf Care for Coastal Florida Grounds.'",
+          "Subtitle: 'Instant address verification across St. Lucie County & North Vero Beach. Acreage-calibrated estimates in 5 seconds.'",
+          "Interactive Address Checker Box (Hero Widget): Zip Code/Address Input + Auto-detect + Instant acreage slider + Realtime price quote calculation card"
+        ]
+      },
+      "right_col": {
+        "span": "col-span-12 lg:col-span-5",
+        "content": [
+          "Dynamic Pricing Breakdown Card with St. Lucie County zoning highlights",
+          "Sample pricing tiers (Quarter Acre $49/cut, Half Acre $79/cut, 1+ Acre $129+/cut, Bi-weekly & Weekly plans)",
+          "Background preview of mowed estate turf with subtle botanical grid lines"
+        ]
+      }
+    },
+    "editorial_marquee": {
+      "type": "The 'Editorial Ribbon' Slow Drift Marquee",
+      "classes": "py-6 border-y border-[#1E3328] bg-[#0E1B15] text-[#A2B4AA] text-sm uppercase tracking-[0.2em] font-mono",
+      "items": [
+        "PORT ST. LUCIE [34952 / 34953 / 34983 / 34984 / 34986 / 34987]",
+        "FORT PIERCE [34945 / 34946 / 34947 / 34950 / 34982]",
+        "ST. LUCIE WEST & TRADITION [34986 / 34987]",
+        "HUTCHINSON ISLAND COASTAL [34949]",
+        "NORTH VERO BEACH [32960 / 32962 / 32963 / 32967]",
+        "WHITE-GLOVE EDGING & BLADE ROTATION",
+        "BERMUDA & ST. AUGUSTINE SPECIALISTS"
+      ]
+    },
+    "calculator_and_quote_flow": {
+      "step_1": "Address / Zip validation (Instant regex + lookup in St. Lucie & Vero list)",
+      "step_2": "Acreage estimation slider (0.10 acre - 5.0+ acres) with interactive yard illustration",
+      "step_3": "Service frequency selection (Weekly Precision, Bi-Weekly Estate, Full Turf Treatment)",
+      "step_4": "Instant calculated price display ($45 - $280/visit)",
+      "step_5": "Quote Request / Schedule Call Form (Name, Phone, Email, Property Address, Preferred Day, Notes) + Direct Call button '(772) 882-9420'",
+      "step_6": "Owner Quick Config Drawer (sample prices & zip codes modal/drawer to edit live rates for demonstration)"
+    },
+    "features_bento_grid": {
+      "mode": "Tetris Bento Mode (Asymmetry)",
+      "cards": [
+        {
+          "title": "Razor-Edge Rotary Precision",
+          "desc": "Precision blade sharpening before every route. Clean 45-degree angle striping calibrated for Floratam and Bermuda.",
+          "span": "col-span-12 md:col-span-8"
+        },
+        {
+          "title": "Coastal Soil & Salinity Defence",
+          "desc": "Custom nutrient cycles tuned to St. Lucie sandy loam and coastal humidity.",
+          "span": "col-span-12 md:col-span-4"
+        },
+        {
+          "title": "Zero-Gutter Clean Trimming",
+          "desc": "Hardscaping, driveway edging, and debris vacuuming standard on every visit.",
+          "span": "col-span-12 md:col-span-4"
+        },
+        {
+          "title": "Flexible Service Schedules",
+          "desc": "Manage your frequency from rainy summer spurts to winter maintenance without rigid contracts.",
+          "span": "col-span-12 md:col-span-8"
+        }
+      ]
+    }
+  },
+  "motion": {
+    "engine": "motion/react",
+    "respect_reduced_motion": true,
+    "effects": {
+      "hero_title": "Masked line reveal: opacity 0 -> 1, y: 24 -> 0, duration 0.7s with easeOut cubic bezier",
+      "calculator_card": "Smooth spring scale and fade when switching address verification status",
+      "price_counter": "Animated numeric transition when acreage slider moves",
+      "button_hover": "Subtle border glow and 2px lift on hover, scale 0.98 on tap",
+      "ticker": "Smooth perpetual CSS marquee transform at 35s loop"
+    }
+  },
+  "accessibility": {
+    "wcag_compliance": "WCAG AA (APCA checked)",
+    "text_contrast": "All text-on-surface pairs exceed 4.5:1 ratio",
+    "focus_states": "High-contrast emerald ring: focus:ring-2 focus:ring-[#34D399] focus:outline-none focus:ring-offset-2 focus:ring-offset-[#0B1510]",
+    "form_labels": "Explicit Shadcn Label components for every input and slider",
+    "aria_roles": "aria-live='polite' on quote price updates and zip status messages",
+    "touch_targets": "Minimum 44x44px for all mobile interactive buttons, inputs, and sliders"
+  },
+  "image_urls": {
+    "hero_lawn": {
+      "url": "https://images.unsplash.com/photo-1764969370921-7c8df49171cd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwzfHxsdXNoJTIwZ3JlZW4lMjBsYXduJTIwbW93ZWQlMjBlc3RhdGV8ZW58MHx8fHwxNzkxNjMzODE5fDA&ixlib=rb-4.1.0&q=85",
+      "category": "hero_background",
+      "description": "Lush freshly mown pristine green lawn estate under bright sun"
+    },
+    "estate_grounds": {
+      "url": "https://images.unsplash.com/photo-1645723947866-4f98043ddc0b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwxfHxsdXNoJTIwZ3JlZW4lMjBsYXduJTIwbW93ZWQlMjBlc3RhdGV8ZW58MHx8fHwxNzkxNjMzODE5fDA&ixlib=rb-4.1.0&q=85",
+      "category": "estate_showcase",
+      "description": "Expansive green grounds and manicured estate landscape"
+    },
+    "mowing_precision": {
+      "url": "https://images.unsplash.com/photo-1501520158826-76df880863a3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHw0fHxsYXduJTIwbW93ZXIlMjBwcmVjaXNpb24lMjBsYW5kc2NhcGluZyUyMHR1cmZ8ZW58MHx8fHwxNzkxNjMzODE5fDA&ixlib=rb-4.1.0&q=85",
+      "category": "equipment_precision",
+      "description": "High-altitude view of immaculate turf striping and precision lawn maintenance"
+    },
+    "florida_coastal_sun": {
+      "url": "https://images.unsplash.com/photo-1775161795266-39996ca6220d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTJ8MHwxfHNlYXJjaHwzfHxmbG9yaWRhJTIwcGFsbSUyMHJlc2lkZW50aWFsJTIwZ2FyZGVuJTIwc3VubGlnaHR8ZW58MHx8fHwxNzkxNjMzODE5fDA&ixlib=rb-4.1.0&q=85",
+      "category": "coastal_environment",
+      "description": "Florida sunlight filtering through lush coastal palm fronds"
+    }
+  },
+  "component_structure": {
+    "app_shell": "/app/frontend/src/App.tsx",
+    "pages": {
+      "Home": "/app/frontend/src/pages/Home.tsx"
+    },
+    "components": {
+      "Navbar": "/app/frontend/src/components/Navbar.tsx",
+      "HeroAddressChecker": "/app/frontend/src/components/HeroAddressChecker.tsx",
+      "InstantQuoteCalculator": "/app/frontend/src/components/InstantQuoteCalculator.tsx",
+      "QuoteRequestModal": "/app/frontend/src/components/QuoteRequestModal.tsx",
+      "OwnerConfigDrawer": "/app/frontend/src/components/OwnerConfigDrawer.tsx",
+      "ServiceAreaMapList": "/app/frontend/src/components/ServiceAreaMapList.tsx",
+      "FeatureBento": "/app/frontend/src/components/FeatureBento.tsx",
+      "TestimonialsAndTrust": "/app/frontend/src/components/TestimonialsAndTrust.tsx",
+      "Footer": "/app/frontend/src/components/Footer.tsx"
+    },
+    "ui_primitives": {
+      "badge": "@/components/ui/badge",
+      "button": "@/components/ui/button",
+      "card": "@/components/ui/card",
+      "dialog": "@/components/ui/dialog",
+      "input": "@/components/ui/input",
+      "label": "@/components/ui/label",
+      "sheet": "@/components/ui/sheet",
+      "sonner": "@/components/ui/sonner",
+      "tabs": "@/components/ui/tabs",
+      "textarea": "@/components/ui/textarea"
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. Replace default generic green with deep obsidian-forest (#0B1510) and emerald-leaf (#10B981) + warm gold accents.",
+    "2. Implement the address verification with fuzzy matching for St. Lucie County and Vero Beach zip codes (34945-34990, 32960, 32962, 32963, 32967) and street names (e.g., Tradition, St. Lucie West, Port St. Lucie Blvd, US-1, PGA Village).",
+    "3. Build the Acreage Estimator Slider (0.15 - 5.0 acres) calculating instant base pricing: e.g. Base $45 + ($55 * acreage) for weekly cuts, and display bi-weekly option.",
+    "4. Add a full Quote Request Dialog using Shadcn Dialog/Form with fields: Full Name, Phone Number, Email, Address, Acreage, Selected Frequency, Service Notes.",
+    "5. Provide an 'Owner Settings' drawer or toggle allowing the owner to modify base rates, per-acre multipliers, and add/remove zip codes in real time stored in state or local storage/backend.",
+    "6. Prominently display the call-to-action with the business phone (772) 882-9420 featuring click-to-call 'tel:' links.",
+    "7. Include all required data-testid attributes on inputs, buttons, sliders, quote results, and modals for automated testing."
+  ]
+}
