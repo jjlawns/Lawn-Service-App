@@ -23,6 +23,7 @@ INDEXES: dict[str, list[IndexModel]] = {
     "zip_stats": [IndexModel([("id", ASCENDING)], name="id", unique=True)],
     "properties": [IndexModel([("address_key", ASCENDING)], name="address_key", unique=True)],
     "quotes": [IndexModel([("created_at", DESCENDING)], name="created_desc")],
+    "login_attempts": [IndexModel([("identifier", ASCENDING)], name="identifier", unique=True)],
 }
 
 

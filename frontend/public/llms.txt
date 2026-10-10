@@ -1,0 +1,14 @@
+# J&J Lawn & Landscape
+
+Lawn care and landscaping for homes and businesses in St. Lucie County, Florida — including Port St. Lucie, Fort Pierce, Lakewood Park, Tradition, St. Lucie West, and Hutchinson Island.
+
+## What the site does
+- Instant service-area check: a visitor types a street address or zip code and learns whether J&J covers their property (St. Lucie County only).
+- Instant price estimate: lot size is pulled from county property tax-roll records and priced for monthly maintenance service or one-time cleanups, with adjustments for overgrown yards, corner lots, and drive distance.
+- Quote requests: visitors can send their details and J&J calls them back, or call directly at (772) 940-4424.
+
+## Standard service
+Every visit includes mowing, weed eating, edging, blow-off, and weed control. Monthly service runs about three cuts per month (roughly every 10 days in summer, every 14 in winter), month-to-month with no long contract. One-time cleanups are also offered. No bush hogging.
+
+## Key pages
+- `/` — address checker, instant estimate, service details, and quote request form

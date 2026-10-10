@@ -18,6 +18,8 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 from lib.db import client, db, ensure_indexes
+from lib.emailer import send_quote_alert
+from routers.admin import router as admin_router
 
 logger = logging.getLogger(__name__)
 
@@ -108,12 +110,14 @@ class QuoteRequestBody(BaseModel):
     acres: float | None = None
     plan: str = "monthly"
     overgrowth: str | None = None
+    corner_lot: bool = False
     estimate: float | None = None
     notes: str = Field(default="", max_length=1000)
 
 
 class Quote(QuoteRequestBody):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "new"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -412,9 +416,11 @@ async def check_address(body: AddressCheckRequest):
 async def create_quote(body: QuoteRequestBody):
     quote = Quote(**body.model_dump())
     await db.quotes.insert_one(quote.model_dump())
+    asyncio.create_task(send_quote_alert(quote.model_dump()))  # fire-and-forget; lead is saved regardless
     return quote
 
 
+api_router.include_router(admin_router)
 app.include_router(api_router)
 
 app.add_middleware(

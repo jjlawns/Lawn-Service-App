@@ -25,6 +25,7 @@ interface QuoteDialogProps {
   acres: number;
   plan: Plan;
   overgrowth: Overgrowth;
+  corner: boolean;
   growthFee: number;
   estimate: number;
   phone: string;
@@ -42,6 +43,7 @@ export function QuoteDialog({
   acres,
   plan,
   overgrowth,
+  corner,
   growthFee,
   estimate,
   phone,
@@ -67,6 +69,7 @@ export function QuoteDialog({
         acres,
         plan,
         overgrowth,
+        corner_lot: corner,
         estimate,
         notes,
       }),
@@ -97,7 +100,8 @@ export function QuoteDialog({
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl">Request your quote</DialogTitle>
           <DialogDescription className="text-[#A2B4AA]">
-            {PLAN_LABELS[plan]} · {acres.toFixed(2)} ac · estimated{" "}
+            {PLAN_LABELS[plan]} · {acres.toFixed(2)} ac
+            {corner ? " · corner lot" : ""} · estimated{" "}
             <span className="font-semibold text-emerald-400">
               ${estimate}
               {plan === "monthly" ? (growthFee > 0 ? " first month" : "/month") : " total"}

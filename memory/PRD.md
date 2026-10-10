@@ -21,6 +21,11 @@ User choices: zip-code-list service area (St. Lucie County + northernmost Vero B
 - POST /api/quotes — quote-request lead capture
 
 ## Implemented (2026-10-10)
+- Quote alerts: owner gets an email (Emergent-managed Resend) on every new quote request → Keri@jjlawnandlandscape.com, reply-to set to the customer; fire-and-forget so mail failure never loses a lead
+- Lead dashboard at /admin: password-only owner login (JWT httpOnly cookie, 7-day session, 5-attempt/15-min lockout), leads list with status tracking (new/contacted/won/lost), click-to-call/mail links
+- Corner-lot question in the checker: doubles the scaled easement charge for the second street-facing easement; shown in estimate, quote, and dashboard
+- SEO: full static head (title/description/OG/Twitter/robots/theme-color), LocalBusiness JSON-LD (phone confirmed; no address/hours/ratings — unconfirmed, per policy), noscript fallback, robots.txt + llms.txt (real files, text/plain). PENDING: canonical/og:url/og:image/sitemap need the real production domain; footer copy claims "Mon–Sat 7am–6pm · Licensed & insured" — UNCONFIRMED, owner to verify
+- Auth: ADMIN_PASSWORD + JWT_SECRET in backend/.env; routers/admin.py; lib/auth.py; lib/emailer.py
 - Kinetic split hero with masked line reveal, parallax live rate card, editorial marquee, bento grid, route-map zip chips, footer with click-to-call
 - Address checker: full address or zip-only; city optional (auto-retries with "St. Lucie County, FL" context); in/out-of-area badge; county acreage with slider override
 - Pricing (owner-corrected 2026-10-10): cut = max($35, $35 + $70/acre beyond 0.25 ac) + easement that scales with lot size: $5 × max(1, 1 + acres − 0.25) → $5 at ≤0.25 ac, ~$6 at 0.5, ~$9 at 1 ac, ~$14 at 2 ac. Monthly = 3×cut, flat $100/mo for lots under 0.2 ac. Verified: 0.18ac→$100/mo, 0.23ac→$120/mo, 0.5ac→$59/cut, 1ac→$96/cut. One-Time Cleanup 1.5× cut. Overgrowth first-cut multipliers: 2–4 wks 2×, 1–2 mo 3×, 2+ mo 4×

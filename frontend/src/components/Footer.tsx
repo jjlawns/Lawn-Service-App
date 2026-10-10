@@ -37,6 +37,9 @@ export function Footer({ config }: { config: ServiceConfig }) {
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 font-mono text-[11px] uppercase tracking-[0.16em] text-[#5C6F64] sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <span>© {new Date().getFullYear()} J&amp;J Lawn &amp; Landscape</span>
           <span>Estimates calibrated from county property records</span>
+          <a href="/admin" data-testid="owner-login-link" className="transition-colors hover:text-emerald-300">
+            Owner login
+          </a>
         </div>
       </div>
     </footer>

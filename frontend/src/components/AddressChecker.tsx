@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { apiPost } from "@/lib/api";
 import {
   cutPrice,
+  easementCharge,
   monthlyPrice,
   onetimePrice,
   overgrowthFee,
@@ -39,6 +40,7 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
   const [incomePct, setIncomePct] = useState(0);
   const [plan, setPlan] = useState<Plan>("monthly");
   const [overgrowth, setOvergrowth] = useState<Overgrowth>("recent");
+  const [corner, setCorner] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
 
   const checkMutation = useMutation({
@@ -47,6 +49,7 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
       setResult(r);
       setDistanceFee(r.distance_fee ?? 0);
       setIncomePct(r.income_adjust_pct ?? 0);
+      setCorner(false);
       if (r.acres) setAcres(Math.min(MAX_ACRES, Math.max(MIN_ACRES, r.acres)));
     },
     onError: () =>
@@ -59,12 +62,14 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
     checkMutation.mutate(a);
   };
 
-  const cut = Math.round((cutPrice(config, acres) + distanceFee) * (1 + incomePct));
+  const cut = Math.round((cutPrice(config, acres, corner) + distanceFee) * (1 + incomePct));
+  const cornerExtra = corner ? easementCharge(config, acres) : 0;
   const growthMult = OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.multiplier ?? 1;
   const growthFee = overgrowthFee(cut, growthMult);
   const monthly = monthlyPrice(config, cut, acres);
   const price = plan === "monthly" ? monthly + growthFee : onetimePrice(cut) + growthFee;
   const fillPct = ((acres - MIN_ACRES) / (MAX_ACRES - MIN_ACRES)) * 100;
+  const showAdjustments = distanceFee > 0 || incomePct !== 0 || corner;
 
   return (
     <div id="checker" data-testid="address-checker" className="w-full max-w-2xl scroll-mt-28">
@@ -223,6 +228,30 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                       </div>
                     </div>
 
+                    <div>
+                      <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[#A2B4AA]">
+                        Is it a corner lot?
+                      </p>
+                      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Corner lot">
+                        {([false, true] as const).map((val) => (
+                          <button
+                            key={String(val)}
+                            role="radio"
+                            aria-checked={corner === val}
+                            data-testid={val ? "corner-yes" : "corner-no"}
+                            onClick={() => setCorner(val)}
+                            className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                              corner === val
+                                ? "bg-emerald-500 text-[#042F24]"
+                                : "border border-[#1E3328] text-[#A2B4AA] hover:border-emerald-500/50 hover:text-[#F3F7F4]"
+                            }`}
+                          >
+                            {val ? "Yes, corner lot" : "No"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                     <div className="flex flex-wrap items-end justify-between gap-4 rounded-xl bg-[#122019] p-5">
                       <div>
                         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#A2B4AA]">
@@ -258,12 +287,14 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                             Includes a ${growthFee} overgrowth recovery fee on the first cut
                           </p>
                         )}
-                        {(distanceFee > 0 || incomePct !== 0) && (
+                        {showAdjustments && (
                           <p className="mt-1 text-xs text-[#5C6F64]" data-testid="pricing-adjustments">
                             {distanceFee > 0 &&
                               `Includes a $${distanceFee}/cut drive-distance surcharge (${result.distance_miles} mi from our Fort Pierce base). `}
                             {incomePct !== 0 &&
-                              `Area rate adjustment ${incomePct > 0 ? "+" : ""}${Math.round(incomePct * 100)}% applied.`}
+                              `Area rate adjustment ${incomePct > 0 ? "+" : ""}${Math.round(incomePct * 100)}% applied. `}
+                            {corner &&
+                              `Corner lot adds $${cornerExtra}/cut for the second street-facing easement.`}
                           </p>
                         )}
                       </div>
@@ -313,6 +344,7 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
         acres={acres}
         plan={plan}
         overgrowth={overgrowth}
+        corner={corner}
         growthFee={growthFee}
         estimate={price}
         phone={config.phone}
