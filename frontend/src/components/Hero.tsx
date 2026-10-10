@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { AddressChecker } from "@/components/AddressChecker";
-import { priceFor } from "@/lib/types";
+import { cutPrice } from "@/lib/types";
 import type { ServiceConfig } from "@/lib/types";
 
 const HERO_IMG =
@@ -120,14 +120,14 @@ export function Hero({ config }: { config: ServiceConfig }) {
                   <li key={t.label} className="flex items-baseline justify-between py-3">
                     <span className="text-sm text-[#A2B4AA]">{t.label}</span>
                     <span className="font-heading text-xl text-[#F3F7F4]">
-                      ${priceFor(config, t.acres, "weekly")}
-                      <span className="ml-1 font-sans text-xs text-[#A2B4AA]">/cut weekly</span>
+                      ${cutPrice(config, t.acres)}
+                      <span className="ml-1 font-sans text-xs text-[#A2B4AA]">/cut</span>
                     </span>
                   </li>
                 ))}
               </ul>
               <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#A2B4AA]">
-                {config.zips.length} zip codes on route · no contracts
+                {config.zips.length} zip codes on route · month-to-month, no lock-in
               </p>
             </div>
           </motion.div>

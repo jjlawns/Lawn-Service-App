@@ -3,8 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Loader2, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { apiPost } from "@/lib/api";
-import { FREQUENCY_LABELS, telHref } from "@/lib/types";
-import type { Frequency } from "@/lib/types";
+import { OVERGROWTH_OPTIONS, PLAN_LABELS, telHref } from "@/lib/types";
+import type { Overgrowth, Plan } from "@/lib/types";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,9 @@ interface QuoteDialogProps {
   address: string;
   zip: string | null;
   acres: number;
-  frequency: Frequency;
+  plan: Plan;
+  overgrowth: Overgrowth;
+  growthFee: number;
   estimate: number;
   phone: string;
 }
@@ -38,7 +40,9 @@ export function QuoteDialog({
   address,
   zip,
   acres,
-  frequency,
+  plan,
+  overgrowth,
+  growthFee,
   estimate,
   phone,
 }: QuoteDialogProps) {
@@ -61,7 +65,8 @@ export function QuoteDialog({
         address: propertyAddress,
         zip,
         acres,
-        frequency,
+        plan,
+        overgrowth,
         estimate,
         notes,
       }),
@@ -92,9 +97,16 @@ export function QuoteDialog({
         <DialogHeader>
           <DialogTitle className="font-heading text-2xl">Request your quote</DialogTitle>
           <DialogDescription className="text-[#A2B4AA]">
-            {FREQUENCY_LABELS[frequency]} · {acres.toFixed(2)} ac · estimated{" "}
-            <span className="font-semibold text-emerald-400">${estimate}/visit</span>. We confirm
-            every quote with a quick walkthrough.
+            {PLAN_LABELS[plan]} · {acres.toFixed(2)} ac · estimated{" "}
+            <span className="font-semibold text-emerald-400">
+              ${estimate}
+              {plan === "monthly" ? "/month" : " total"}
+            </span>
+            {growthFee > 0 &&
+              ` · $${growthFee} overgrowth fee (${
+                OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.label ?? ""
+              }${plan === "monthly" ? ", first visit" : ""})`}
+            . We confirm every quote with a quick walkthrough.
           </DialogDescription>
         </DialogHeader>
 

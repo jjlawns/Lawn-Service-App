@@ -163,8 +163,8 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
               </div>
             </div>
             <p className="text-xs leading-relaxed text-[#5C6F64]">
-              Weekly price = max(minimum, base + per-acre × acres beyond the included amount).
-              Bi-weekly visits price at 1.2×, one-time cleanups at 1.5×.
+              Cut price = max(minimum, base + per-acre × acres beyond the included amount).
+              Monthly service bills 3 cuts per month; one-time cleanups price at 1.5× a cut.
             </p>
             <Button
               data-testid="config-save-btn"

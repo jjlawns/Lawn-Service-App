@@ -39,11 +39,10 @@ DEFAULT_CONFIG = {
         "34985", "34986", "34987", "34988", "34990",
         "32960", "32962", "32963", "32967",
     ],
-    "base_price": 49.0,
-    "per_acre": 120.0,
+    "base_price": 35.0,
+    "per_acre": 70.0,
     "included_acres": 0.25,
-    "min_price": 49.0,
-    "frequency_multipliers": {"weekly": 1.0, "biweekly": 1.2, "onetime": 1.5},
+    "min_price": 35.0,
 }
 
 
@@ -55,7 +54,6 @@ class ServiceConfig(BaseModel):
     per_acre: float
     included_acres: float
     min_price: float
-    frequency_multipliers: dict[str, float]
 
 
 class ServiceConfigUpdate(BaseModel):
@@ -78,7 +76,7 @@ class AddressCheckResult(BaseModel):
     zip: str | None = None
     acres: float | None = None
     acres_source: str | None = None
-    estimate_weekly: float | None = None
+    estimate_cut: float | None = None
 
 
 class QuoteRequestBody(BaseModel):
@@ -88,7 +86,8 @@ class QuoteRequestBody(BaseModel):
     address: str = Field(min_length=3, max_length=300)
     zip: str | None = None
     acres: float | None = None
-    frequency: str = "weekly"
+    plan: str = "monthly"
+    overgrowth: str | None = None
     estimate: float | None = None
     notes: str = Field(default="", max_length=1000)
 
@@ -98,7 +97,7 @@ class Quote(QuoteRequestBody):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-def weekly_estimate(cfg: dict, acres: float) -> float:
+def cut_estimate(cfg: dict, acres: float) -> float:
     billable = max(0.0, acres - cfg["included_acres"])
     return float(round(max(cfg["min_price"], cfg["base_price"] + cfg["per_acre"] * billable)))
 
@@ -116,7 +115,7 @@ def haversine_m(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     return 2 * r * math.asin(math.sqrt(a))
 
 
-async def geocode(address: str) -> dict | None:
+async def _geocode_once(address: str) -> dict | None:
     try:
         async with httpx.AsyncClient(timeout=12, headers=HTTP_HEADERS) as http:
             resp = await http.get(
@@ -140,6 +139,19 @@ async def geocode(address: str) -> dict | None:
     except Exception as exc:
         logger.warning("geocode failed for %r: %s", address, exc)
         return None
+
+
+async def geocode(address: str) -> dict | None:
+    # Customers inside the county rarely type the city — retry with county context.
+    attempts = [address]
+    if not ZIP_RE.search(address):
+        attempts.append(f"{address}, St. Lucie County, FL")
+        attempts.append(f"{address}, FL")
+    for attempt in attempts:
+        result = await _geocode_once(attempt)
+        if result:
+            return result
+    return None
 
 
 async def lookup_acres(lat: float, lng: float) -> float | None:
@@ -214,7 +226,6 @@ async def update_config(body: ServiceConfigUpdate):
     update["zips"] = sorted({z for z in (z.strip() for z in update["zips"]) if re.fullmatch(r"\d{5}", z)})
     if not update["zips"]:
         raise HTTPException(status_code=400, detail="At least one valid 5-digit zip code is required.")
-    update["frequency_multipliers"] = DEFAULT_CONFIG["frequency_multipliers"]
     await db.config.update_one({"id": "main"}, {"$set": update}, upsert=True)
     return ServiceConfig(id="main", **update)
 
@@ -244,7 +255,7 @@ async def check_address(body: AddressCheckRequest):
         zip=zipcode,
         acres=acres,
         acres_source="county" if acres else None,
-        estimate_weekly=weekly_estimate(cfg, acres) if acres else None,
+        estimate_cut=cut_estimate(cfg, acres) if acres else None,
     )
     await db.properties.update_one(
         {"address_key": key},

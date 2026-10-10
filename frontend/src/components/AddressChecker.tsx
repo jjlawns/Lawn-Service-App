@@ -13,13 +13,21 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { apiPost } from "@/lib/api";
-import { FREQUENCY_LABELS, priceFor, telHref } from "@/lib/types";
-import type { AddressCheckResult, Frequency, ServiceConfig } from "@/lib/types";
+import {
+  cutPrice,
+  monthlyPrice,
+  onetimePrice,
+  overgrowthFee,
+  OVERGROWTH_OPTIONS,
+  PLAN_LABELS,
+  telHref,
+} from "@/lib/types";
+import type { AddressCheckResult, Overgrowth, Plan, ServiceConfig } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { QuoteDialog } from "@/components/QuoteDialog";
 
-const FREQUENCIES: Frequency[] = ["weekly", "biweekly", "onetime"];
+const PLANS: Plan[] = ["monthly", "onetime"];
 const MIN_ACRES = 0.1;
 const MAX_ACRES = 5;
 
@@ -27,7 +35,8 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
   const [address, setAddress] = useState("");
   const [result, setResult] = useState<AddressCheckResult | null>(null);
   const [acres, setAcres] = useState(0.25);
-  const [frequency, setFrequency] = useState<Frequency>("weekly");
+  const [plan, setPlan] = useState<Plan>("monthly");
+  const [overgrowth, setOvergrowth] = useState<Overgrowth>("recent");
   const [quoteOpen, setQuoteOpen] = useState(false);
 
   const checkMutation = useMutation({
@@ -46,7 +55,10 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
     checkMutation.mutate(a);
   };
 
-  const price = priceFor(config, acres, frequency);
+  const cut = cutPrice(config, acres);
+  const growthMult = OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.multiplier ?? 1;
+  const growthFee = overgrowthFee(cut, growthMult);
+  const price = plan === "monthly" ? monthlyPrice(cut) : onetimePrice(cut) + growthFee;
   const fillPct = ((acres - MIN_ACRES) / (MAX_ACRES - MIN_ACRES)) * 100;
 
   return (
@@ -153,29 +165,63 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Service frequency">
-                      {FREQUENCIES.map((f) => (
-                        <button
-                          key={f}
-                          role="tab"
-                          aria-selected={frequency === f}
-                          data-testid={`freq-tab-${f}`}
-                          onClick={() => setFrequency(f)}
-                          className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                            frequency === f
-                              ? "bg-emerald-500 text-[#042F24]"
-                              : "border border-[#1E3328] text-[#A2B4AA] hover:border-emerald-500/50 hover:text-[#F3F7F4]"
-                          }`}
-                        >
-                          {FREQUENCY_LABELS[f]}
-                        </button>
-                      ))}
+                    <div>
+                      <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[#A2B4AA]">
+                        Service plan
+                      </p>
+                      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Service plan">
+                        {PLANS.map((p) => (
+                          <button
+                            key={p}
+                            role="tab"
+                            aria-selected={plan === p}
+                            data-testid={`plan-tab-${p}`}
+                            onClick={() => setPlan(p)}
+                            className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                              plan === p
+                                ? "bg-emerald-500 text-[#042F24]"
+                                : "border border-[#1E3328] text-[#A2B4AA] hover:border-emerald-500/50 hover:text-[#F3F7F4]"
+                            }`}
+                          >
+                            {PLAN_LABELS[p]}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="mt-2 text-xs text-[#5C6F64]">
+                        {plan === "monthly"
+                          ? "Every 10 days in summer · every 14 in winter · month-to-month, cancel anytime"
+                          : "A single full-property cleanup pass — no ongoing commitment"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[#A2B4AA]">
+                        How long since it was last mowed?
+                      </p>
+                      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Time since last mow">
+                        {OVERGROWTH_OPTIONS.map((o) => (
+                          <button
+                            key={o.key}
+                            role="radio"
+                            aria-checked={overgrowth === o.key}
+                            data-testid={`overgrowth-${o.key}`}
+                            onClick={() => setOvergrowth(o.key)}
+                            className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                              overgrowth === o.key
+                                ? "bg-[#EAB308] text-[#422006]"
+                                : "border border-[#1E3328] text-[#A2B4AA] hover:border-amber-400/50 hover:text-[#F3F7F4]"
+                            }`}
+                          >
+                            {o.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="flex flex-wrap items-end justify-between gap-4 rounded-xl bg-[#122019] p-5">
                       <div>
                         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#A2B4AA]">
-                          Estimated per visit
+                          {plan === "monthly" ? "Estimated per month" : "One-time total"}
                         </p>
                         <p className="mt-1 overflow-hidden font-heading text-5xl text-emerald-400">
                           <motion.span
@@ -190,8 +236,17 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                           </motion.span>
                         </p>
                         <p className="mt-1 text-xs text-[#5C6F64]">
-                          {FREQUENCY_LABELS[frequency]} · final quote confirmed on walkthrough
+                          {plan === "monthly"
+                            ? `≈3 cuts/month at $${cut}/cut · final quote confirmed on walkthrough`
+                            : "Full cleanup pass · final quote confirmed on walkthrough"}
                         </p>
+                        {growthFee > 0 && (
+                          <p className="mt-1 text-xs text-amber-400" data-testid="overgrowth-fee-note">
+                            {plan === "monthly"
+                              ? `First visit adds a $${growthFee} overgrowth recovery fee`
+                              : `Includes a $${growthFee} overgrowth recovery fee`}
+                          </p>
+                        )}
                       </div>
                       <Button
                         data-testid="request-quote-btn"
@@ -237,7 +292,9 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
         address={result?.matched_address ?? address}
         zip={result?.zip ?? null}
         acres={acres}
-        frequency={frequency}
+        plan={plan}
+        overgrowth={overgrowth}
+        growthFee={growthFee}
         estimate={price}
         phone={config.phone}
       />

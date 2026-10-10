@@ -22,8 +22,9 @@ User choices: zip-code-list service area (St. Lucie County + northernmost Vero B
 
 ## Implemented (2026-10-10)
 - Kinetic split hero with masked line reveal, parallax live rate card, editorial marquee, bento grid, route-map zip chips, footer with click-to-call
-- Address checker: full address or zip-only; in/out-of-area badge; county acreage with slider override; weekly/bi-weekly/one-time pricing; animated price
-- Quote request dialog (name/phone/email/address/notes) → MongoDB, success toast
+- Address checker: full address or zip-only; city optional (auto-retries with "St. Lucie County, FL" context); in/out-of-area badge; county acreage with slider override
+- Pricing: cut price = max(min, base $35 + $70/acre beyond 0.25 ac). Plans: Monthly Service (3 cuts/month, every 10 days summer / 14 winter, month-to-month) and One-Time Cleanup (1.5× cut). Overgrowth question (time since last mow) adds recovery fee: 2–4 wks +15%, 1–2 mo +35%, 2+ mo +60%
+- Quote request dialog (name/phone/email/address/notes + plan/overgrowth) → MongoDB, success toast
 - Owner settings drawer (gear in navbar): edit phone, zips, base/per-acre/min price, included acres — live
 - Original SVG logo + favicon
 
