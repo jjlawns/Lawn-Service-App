@@ -35,6 +35,8 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
   const [address, setAddress] = useState("");
   const [result, setResult] = useState<AddressCheckResult | null>(null);
   const [acres, setAcres] = useState(0.25);
+  const [distanceFee, setDistanceFee] = useState(0);
+  const [incomePct, setIncomePct] = useState(0);
   const [plan, setPlan] = useState<Plan>("monthly");
   const [overgrowth, setOvergrowth] = useState<Overgrowth>("recent");
   const [quoteOpen, setQuoteOpen] = useState(false);
@@ -43,6 +45,8 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
     mutationFn: (a: string) => apiPost<AddressCheckResult>("/check-address", { address: a }),
     onSuccess: (r) => {
       setResult(r);
+      setDistanceFee(r.distance_fee ?? 0);
+      setIncomePct(r.income_adjust_pct ?? 0);
       if (r.acres) setAcres(Math.min(MAX_ACRES, Math.max(MIN_ACRES, r.acres)));
     },
     onError: () =>
@@ -55,7 +59,7 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
     checkMutation.mutate(a);
   };
 
-  const cut = cutPrice(config, acres);
+  const cut = Math.round((cutPrice(config, acres) + distanceFee) * (1 + incomePct));
   const growthMult = OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.multiplier ?? 1;
   const growthFee = overgrowthFee(cut, growthMult);
   const monthly = monthlyPrice(config, cut, acres);
@@ -252,6 +256,14 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                         {growthFee > 0 && (
                           <p className="mt-1 text-xs text-amber-400" data-testid="overgrowth-fee-note">
                             Includes a ${growthFee} overgrowth recovery fee on the first cut
+                          </p>
+                        )}
+                        {(distanceFee > 0 || incomePct !== 0) && (
+                          <p className="mt-1 text-xs text-[#5C6F64]" data-testid="pricing-adjustments">
+                            {distanceFee > 0 &&
+                              `Includes a $${distanceFee}/cut drive-distance surcharge (${result.distance_miles} mi from our Fort Pierce base). `}
+                            {incomePct !== 0 &&
+                              `Area rate adjustment ${incomePct > 0 ? "+" : ""}${Math.round(incomePct * 100)}% applied.`}
                           </p>
                         )}
                       </div>

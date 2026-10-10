@@ -27,9 +27,19 @@ FDOR_PARCEL_URL = (
     "https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/"
     "Florida_Statewide_Parcel_Centroid_Version/FeatureServer/0/query"
 )
-HTTP_HEADERS = {"User-Agent": "VerdantCoast/1.0 (lawn-service-estimator)"}
+HTTP_HEADERS = {"User-Agent": "J&J-Lawn/1.0 (lawn-service-estimator)"}
 SQFT_PER_ACRE = 43560.0
 ZIP_RE = re.compile(r"\b(\d{5})(?:-\d{4})?\b")
+
+# Port St. Lucie cuts carry a drive-distance surcharge from the 34982 Fort Pierce base.
+PSL_ZIPS = {"34952", "34953", "34983", "34984", "34986", "34987"}
+BASE_LAT, BASE_LNG = 27.388946, -80.3184303  # 34982 centroid
+DISTANCE_TIERS = [(10.0, 0.0), (15.0, 5.0), (float("inf"), 10.0)]  # (max miles, $/cut)
+
+# Automatic per-zip rate adjustment from Census ACS 2024 5-yr median household income
+# (Census Reporter API, no key). pct = clamp((zip_income / county_median - 1) * strength).
+CENSUS_REPORTER_URL = "https://api.censusreporter.org/1.0/data/show/latest"
+DEFAULT_INCOME_ADJUST = {"enabled": True, "strength": 0.25, "min": -0.10, "max": 0.15}
 
 DEFAULT_CONFIG = {
     "id": "main",
@@ -44,6 +54,7 @@ DEFAULT_CONFIG = {
     "min_price": 35.0,
     "easement_fee": 5.0,
     "monthly_min": 100.0,
+    "income_adjust": dict(DEFAULT_INCOME_ADJUST),
 }
 
 
@@ -81,6 +92,9 @@ class AddressCheckResult(BaseModel):
     zip: str | None = None
     county: str | None = None
     acres: float | None = None
+    distance_miles: float | None = None
+    distance_fee: float | None = None
+    income_adjust_pct: float | None = None
     acres_source: str | None = None
     estimate_cut: float | None = None
 
@@ -122,6 +136,58 @@ def haversine_m(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     dl = math.radians(lng2 - lng1)
     a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
     return 2 * r * math.asin(math.sqrt(a))
+
+
+async def get_zip_stats(cfg: dict) -> dict:
+    doc = await db.zip_stats.find_one({"id": "main"})
+    if doc and doc.get("zips"):
+        fetched = doc.get("fetched_at")
+        if fetched and fetched.tzinfo is None:
+            fetched = fetched.replace(tzinfo=timezone.utc)
+        if fetched and (datetime.now(timezone.utc) - fetched).days < 30:
+            return doc
+    geo_ids = ",".join(f"86000US{z}" for z in cfg["zips"]) + ",05000US12111"
+    try:
+        async with httpx.AsyncClient(timeout=20, headers=HTTP_HEADERS) as http:
+            resp = await http.get(
+                CENSUS_REPORTER_URL, params={"table_ids": "B19013", "geo_ids": geo_ids}
+            )
+            resp.raise_for_status()
+            payload = resp.json()
+        zips: dict[str, float] = {}
+        county_median = None
+        for gid, g in payload.get("data", {}).items():
+            est = g.get("B19013", {}).get("estimate", {}).get("B19013001")
+            if not est or est <= 0:
+                continue
+            if gid.startswith("86000US"):
+                zips[gid[-5:]] = est
+            elif gid == "05000US12111":
+                county_median = est
+        doc = {
+            "id": "main",
+            "zips": zips,
+            "county_median": county_median,
+            "fetched_at": datetime.now(timezone.utc),
+        }
+        await db.zip_stats.update_one({"id": "main"}, {"$set": doc}, upsert=True)
+        return doc
+    except Exception as exc:
+        logger.warning("income stats fetch failed: %s", exc)
+        return doc or {"zips": {}, "county_median": None}
+
+
+async def income_adjustment(zipcode: str | None, cfg: dict) -> float:
+    adj = cfg.get("income_adjust") or DEFAULT_INCOME_ADJUST
+    if not adj.get("enabled", True) or not zipcode:
+        return 0.0
+    stats = await get_zip_stats(cfg)
+    income = (stats.get("zips") or {}).get(zipcode)
+    median = stats.get("county_median")
+    if not income or not median:
+        return 0.0
+    raw = (income / median - 1) * adj.get("strength", 0.25)
+    return max(adj.get("min", -0.10), min(adj.get("max", 0.15), raw))
 
 
 async def _arcgis_geocode(address: str) -> dict | None:
@@ -305,6 +371,22 @@ async def check_address(body: AddressCheckRequest):
     if in_area and geo and geo.get("lat") is not None:
         acres = await lookup_acres(geo["lat"], geo["lng"])
 
+    distance_miles = None
+    distance_fee = 0.0
+    if in_area and zipcode in PSL_ZIPS and geo and geo.get("lat") is not None:
+        distance_miles = round(
+            haversine_m(BASE_LAT, BASE_LNG, geo["lat"], geo["lng"]) / 1609.344, 1
+        )
+        for limit, fee in DISTANCE_TIERS:
+            if distance_miles <= limit:
+                distance_fee = fee
+                break
+    income_pct = await income_adjustment(zipcode, cfg) if in_area else 0.0
+
+    estimate = None
+    if acres:
+        estimate = float(math.floor((cut_estimate(cfg, acres) + distance_fee) * (1 + income_pct) + 0.5))
+
     result = AddressCheckResult(
         in_area=in_area,
         matched_address=geo["matched_address"] if geo else None,
@@ -312,8 +394,11 @@ async def check_address(body: AddressCheckRequest):
         zip=zipcode,
         county=county,
         acres=acres,
+        distance_miles=distance_miles,
+        distance_fee=distance_fee if distance_miles is not None else None,
+        income_adjust_pct=round(income_pct, 4),
         acres_source="county" if acres else None,
-        estimate_cut=cut_estimate(cfg, acres) if acres else None,
+        estimate_cut=estimate,
     )
     await db.properties.update_one(
         {"address_key": key},

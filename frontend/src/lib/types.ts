@@ -17,6 +17,9 @@ export interface AddressCheckResult {
   zip: string | null;
   county: string | null;
   acres: number | null;
+  distance_miles: number | null;
+  distance_fee: number | null;
+  income_adjust_pct: number | null;
   acres_source: string | null;
   estimate_cut: number | null;
 }

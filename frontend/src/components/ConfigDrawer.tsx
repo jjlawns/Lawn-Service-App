@@ -203,7 +203,9 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
               plus the easement fee on lots under 0.25 acre. Monthly service bills 3 cuts
               per month; lots under 0.2 acre pay the flat monthly minimum. One-time
               cleanups price at 1.5× a cut. Overgrown first cuts bill 2–4× a cut
-              depending on time since last mow.
+              depending on time since last mow. Port St. Lucie cuts add $5 beyond 10
+              miles or $10 beyond 15 miles from the 34982 base, and every zip gets an
+              automatic area rate adjustment from Census income data (±10–15% max).
             </p>
             <Button
               data-testid="config-save-btn"
