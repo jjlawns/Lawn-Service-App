@@ -32,7 +32,7 @@ ZIP_RE = re.compile(r"\b(\d{5})(?:-\d{4})?\b")
 
 DEFAULT_CONFIG = {
     "id": "main",
-    "phone": "(772) 882-9420",
+    "phone": "(772) 940-4424",
     "zips": [
         "34945", "34946", "34947", "34948", "34949", "34950", "34951",
         "34952", "34953", "34954", "34981", "34982", "34983", "34984",
@@ -43,6 +43,7 @@ DEFAULT_CONFIG = {
     "per_acre": 70.0,
     "included_acres": 0.25,
     "min_price": 35.0,
+    "easement_fee": 5.0,
 }
 
 
@@ -54,6 +55,7 @@ class ServiceConfig(BaseModel):
     per_acre: float
     included_acres: float
     min_price: float
+    easement_fee: float
 
 
 class ServiceConfigUpdate(BaseModel):
@@ -63,6 +65,7 @@ class ServiceConfigUpdate(BaseModel):
     per_acre: float = Field(ge=0)
     included_acres: float = Field(ge=0)
     min_price: float = Field(gt=0)
+    easement_fee: float = Field(ge=0)
 
 
 class AddressCheckRequest(BaseModel):
@@ -99,7 +102,10 @@ class Quote(QuoteRequestBody):
 
 def cut_estimate(cfg: dict, acres: float) -> float:
     billable = max(0.0, acres - cfg["included_acres"])
-    return float(round(max(cfg["min_price"], cfg["base_price"] + cfg["per_acre"] * billable)))
+    cut = max(cfg["min_price"], cfg["base_price"] + cfg["per_acre"] * billable)
+    if acres < 1.0:
+        cut += cfg["easement_fee"]  # county easements on sub-acre lots are maintained too
+    return float(round(cut))
 
 
 def normalize_address(address: str) -> str:

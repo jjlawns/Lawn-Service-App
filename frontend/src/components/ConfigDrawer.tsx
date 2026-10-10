@@ -24,6 +24,7 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
   const [perAcre, setPerAcre] = useState(String(config.per_acre));
   const [minPrice, setMinPrice] = useState(String(config.min_price));
   const [includedAcres, setIncludedAcres] = useState(String(config.included_acres));
+  const [easementFee, setEasementFee] = useState(String(config.easement_fee));
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
       setPerAcre(String(config.per_acre));
       setMinPrice(String(config.min_price));
       setIncludedAcres(String(config.included_acres));
+      setEasementFee(String(config.easement_fee));
     }
   }, [open, config]);
 
@@ -46,6 +48,7 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
         per_acre: Number(perAcre),
         min_price: Number(minPrice),
         included_acres: Number(includedAcres),
+        easement_fee: Number(easementFee),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["config"] });
@@ -61,7 +64,8 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
     Number(basePrice) > 0 &&
     Number(perAcre) >= 0 &&
     Number(minPrice) > 0 &&
-    Number(includedAcres) >= 0;
+    Number(includedAcres) >= 0 &&
+    Number(easementFee) >= 0;
 
   return (
     <>
@@ -161,10 +165,26 @@ export function ConfigDrawer({ config }: { config: ServiceConfig }) {
                   className="border-[#1E3328] bg-[#122019] text-[#F3F7F4]"
                 />
               </div>
+              <div className="grid gap-2">
+                <Label htmlFor="cfg-easement" className="text-[#A2B4AA]">
+                  Easement fee, under 1 ac ($)
+                </Label>
+                <Input
+                  id="cfg-easement"
+                  data-testid="config-easement-fee-input"
+                  type="number"
+                  min={0}
+                  value={easementFee}
+                  onChange={(e) => setEasementFee(e.target.value)}
+                  className="border-[#1E3328] bg-[#122019] text-[#F3F7F4]"
+                />
+              </div>
             </div>
             <p className="text-xs leading-relaxed text-[#5C6F64]">
-              Cut price = max(minimum, base + per-acre × acres beyond the included amount).
-              Monthly service bills 3 cuts per month; one-time cleanups price at 1.5× a cut.
+              Cut price = max(minimum, base + per-acre × acres beyond the included amount),
+              plus the easement fee on lots under 1 acre. Monthly service bills 3 cuts per
+              month; one-time cleanups price at 1.5× a cut. Overgrown first cuts bill 2–4×
+              a cut depending on time since last mow.
             </p>
             <Button
               data-testid="config-save-btn"

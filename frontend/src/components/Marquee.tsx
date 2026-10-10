@@ -4,7 +4,8 @@ const ITEMS = [
   "St. Lucie West & Tradition [34986 / 34987 / 34990]",
   "Hutchinson Island Coastal [34949]",
   "North Vero Beach [32960 / 32962 / 32963 / 32967]",
-  "White-glove edging & blade rotation",
+  "Residential & commercial routes",
+  "Mow · Weed Eat · Edge · Blow-Off · Weed Control",
   "Bermuda & St. Augustine specialists",
 ];
 

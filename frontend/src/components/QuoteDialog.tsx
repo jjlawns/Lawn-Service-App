@@ -100,12 +100,12 @@ export function QuoteDialog({
             {PLAN_LABELS[plan]} · {acres.toFixed(2)} ac · estimated{" "}
             <span className="font-semibold text-emerald-400">
               ${estimate}
-              {plan === "monthly" ? "/month" : " total"}
+              {plan === "monthly" ? (growthFee > 0 ? " first month" : "/month") : " total"}
             </span>
             {growthFee > 0 &&
-              ` · $${growthFee} overgrowth fee (${
+              ` · includes a $${growthFee} overgrowth fee (${
                 OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.label ?? ""
-              }${plan === "monthly" ? ", first visit" : ""})`}
+              } since last mow)`}
             . We confirm every quote with a quick walkthrough.
           </DialogDescription>
         </DialogHeader>

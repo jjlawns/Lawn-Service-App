@@ -6,6 +6,7 @@ export interface ServiceConfig {
   per_acre: number;
   included_acres: number;
   min_price: number;
+  easement_fee: number;
 }
 
 export interface AddressCheckResult {
@@ -28,13 +29,13 @@ export const PLAN_LABELS: Record<Plan, string> = {
 
 export const OVERGROWTH_OPTIONS: { key: Overgrowth; label: string; multiplier: number }[] = [
   { key: "recent", label: "Within 2 weeks", multiplier: 1 },
-  { key: "weeks", label: "2–4 weeks", multiplier: 1.15 },
-  { key: "month", label: "1–2 months", multiplier: 1.35 },
-  { key: "severe", label: "2+ months", multiplier: 1.6 },
+  { key: "weeks", label: "2–4 weeks", multiplier: 2 },
+  { key: "month", label: "1–2 months", multiplier: 3 },
+  { key: "severe", label: "2+ months", multiplier: 4 },
 ];
 
 export const DEFAULT_CONFIG: ServiceConfig = {
-  phone: "(772) 882-9420",
+  phone: "(772) 940-4424",
   zips: [
     "34945", "34946", "34947", "34948", "34949", "34950", "34951",
     "34952", "34953", "34954", "34981", "34982", "34983", "34984",
@@ -45,12 +46,17 @@ export const DEFAULT_CONFIG: ServiceConfig = {
   per_acre: 70,
   included_acres: 0.25,
   min_price: 35,
+  easement_fee: 5,
 };
 
-// One cut for the lot; monthly plan = 3 cuts/month, one-time cleanup prices higher.
+// One cut for the lot (sub-acre lots include county easement upkeep); monthly plan = 3
+// cuts/month, one-time cleanup prices higher. Overgrown first cuts price at a multiple of
+// a cut, so the overgrowth fee is (multiplier - 1) extra cuts.
 export function cutPrice(config: ServiceConfig, acres: number): number {
   const billable = Math.max(0, acres - config.included_acres);
-  return Math.round(Math.max(config.min_price, config.base_price + config.per_acre * billable));
+  let cut = Math.max(config.min_price, config.base_price + config.per_acre * billable);
+  if (acres < 1) cut += config.easement_fee;
+  return Math.round(cut);
 }
 
 export function monthlyPrice(cut: number): number {

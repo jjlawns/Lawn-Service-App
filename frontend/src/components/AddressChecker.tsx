@@ -58,7 +58,8 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
   const cut = cutPrice(config, acres);
   const growthMult = OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.multiplier ?? 1;
   const growthFee = overgrowthFee(cut, growthMult);
-  const price = plan === "monthly" ? monthlyPrice(cut) : onetimePrice(cut) + growthFee;
+  const monthly = monthlyPrice(cut);
+  const price = plan === "monthly" ? monthly + growthFee : onetimePrice(cut) + growthFee;
   const fillPct = ((acres - MIN_ACRES) / (MAX_ACRES - MIN_ACRES)) * 100;
 
   return (
@@ -221,7 +222,11 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                     <div className="flex flex-wrap items-end justify-between gap-4 rounded-xl bg-[#122019] p-5">
                       <div>
                         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#A2B4AA]">
-                          {plan === "monthly" ? "Estimated per month" : "One-time total"}
+                          {plan === "monthly"
+                            ? growthFee > 0
+                              ? "Estimated first month"
+                              : "Estimated per month"
+                            : "One-time total"}
                         </p>
                         <p className="mt-1 overflow-hidden font-heading text-5xl text-emerald-400">
                           <motion.span
@@ -237,14 +242,14 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                         </p>
                         <p className="mt-1 text-xs text-[#5C6F64]">
                           {plan === "monthly"
-                            ? `≈3 cuts/month at $${cut}/cut · final quote confirmed on walkthrough`
+                            ? `≈3 cuts/month at $${cut}/cut${
+                                growthFee > 0 ? ` · then $${monthly}/mo after` : ""
+                              } · final quote confirmed on walkthrough`
                             : "Full cleanup pass · final quote confirmed on walkthrough"}
                         </p>
                         {growthFee > 0 && (
                           <p className="mt-1 text-xs text-amber-400" data-testid="overgrowth-fee-note">
-                            {plan === "monthly"
-                              ? `First visit adds a $${growthFee} overgrowth recovery fee`
-                              : `Includes a $${growthFee} overgrowth recovery fee`}
+                            Includes a ${growthFee} overgrowth recovery fee on the first cut
                           </p>
                         )}
                       </div>

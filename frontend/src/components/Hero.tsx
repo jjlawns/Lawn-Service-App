@@ -76,7 +76,7 @@ export function Hero({ config }: { config: ServiceConfig }) {
           >
             Type your address. We verify it against our St. Lucie County &amp; North Vero Beach
             routes, pull your lot size from county property records, and price your cut — in
-            about five seconds.
+            about five seconds. Residential and commercial.
           </motion.p>
 
           <motion.div

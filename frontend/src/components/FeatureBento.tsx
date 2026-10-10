@@ -71,9 +71,10 @@ export function FeatureBento() {
           className="col-span-12 flex min-h-[280px] flex-col justify-end rounded-2xl border border-[#1E3328] bg-[#122019] p-7 transition-colors hover:border-emerald-500/40 sm:p-9 md:col-span-4"
         >
           <span className="mb-auto font-mono text-4xl text-emerald-500/30">03</span>
-          <h3 className="font-heading text-2xl text-[#F3F7F4]">Zero-gutter clean trimming</h3>
+          <h3 className="font-heading text-2xl text-[#F3F7F4]">The standard visit, done right</h3>
           <p className="mt-2 text-sm leading-relaxed text-[#A2B4AA]">
-            Hardscaping, driveway edging, and debris vacuuming standard on every visit.
+            Mow, weed eat, crisp edging, full blow-off, and weed control — every visit, every
+            property, no upcharges.
           </p>
         </motion.article>
 
