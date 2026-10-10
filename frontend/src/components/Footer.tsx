@@ -15,8 +15,8 @@ export function Footer({ config }: { config: ServiceConfig }) {
             </span>
           </div>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-[#A2B4AA]">
-            Lawn &amp; landscape care for homes and businesses across St. Lucie County and
-            the northern end of Vero Beach, Florida.
+            Lawn &amp; landscape care for homes and businesses across St. Lucie County,
+            Florida — from Lakewood Park to Hutchinson Island.
           </p>
         </div>
 

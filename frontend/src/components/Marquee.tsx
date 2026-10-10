@@ -1,9 +1,9 @@
 const ITEMS = [
   "Port St. Lucie [34952 / 34953 / 34983 / 34984 / 34986 / 34987]",
   "Fort Pierce [34945 / 34946 / 34947 / 34950 / 34982]",
-  "St. Lucie West & Tradition [34986 / 34987 / 34990]",
+  "St. Lucie West & Tradition [34986 / 34987]",
+  "Lakewood Park [34951]",
   "Hutchinson Island Coastal [34949]",
-  "North Vero Beach [32960 / 32962 / 32963 / 32967]",
   "Residential & commercial routes",
   "Mow · Weed Eat · Edge · Blow-Off · Weed Control",
   "Bermuda & St. Augustine specialists",

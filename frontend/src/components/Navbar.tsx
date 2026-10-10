@@ -25,7 +25,7 @@ export function Navbar({ config }: { config: ServiceConfig }) {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#A2B4AA]">
-            St. Lucie &amp; North Vero — Service Active
+            St. Lucie County — Service Active
           </span>
         </div>
 

@@ -35,10 +35,8 @@ DEFAULT_CONFIG = {
     "id": "main",
     "phone": "(772) 940-4424",
     "zips": [
-        "34945", "34946", "34947", "34948", "34949", "34950", "34951",
-        "34952", "34953", "34954", "34981", "34982", "34983", "34984",
-        "34985", "34986", "34987", "34988", "34990",
-        "32960", "32962", "32963", "32967",
+        "34945", "34946", "34947", "34949", "34950", "34951", "34952",
+        "34953", "34981", "34982", "34983", "34984", "34986", "34987",
     ],
     "base_price": 28.0,
     "per_acre": 70.0,
@@ -296,11 +294,12 @@ async def check_address(body: AddressCheckRequest):
     geo = await geocode(body.address)
     zipcode = (geo or {}).get("zip") or (typed_zip.group(1) if typed_zip else None)
     county = (geo or {}).get("county")
-    # Every St. Lucie County address qualifies, plus the listed North Vero Beach zips.
-    in_area = bool(
-        (county and "st. lucie" in county.lower())
-        or (zipcode and zipcode in cfg["zips"])
-    )
+    # St. Lucie County only: a verified county match always wins; when the geocoder can't
+    # name the county, fall back to the zip list (covers cross-boundary zips safely).
+    if county:
+        in_area = "st. lucie" in county.lower()
+    else:
+        in_area = bool(zipcode and zipcode in cfg["zips"])
 
     acres = None
     if in_area and geo and geo.get("lat") is not None:

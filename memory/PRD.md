@@ -10,7 +10,7 @@ User choices: zip-code-list service area (St. Lucie County + northernmost Vero B
 
 ## Architecture
 - FastAPI + MongoDB backend (`backend/server.py`), React 19 + Vite + Tailwind v4 frontend
-- Address verification: ArcGIS World Geocoder (free, no key) with county-scoped retry for city-less input; Census geocoder as fallback. In-area = county "St. Lucie County" OR zip in list (covers every St. Lucie County address + North Vero Beach zips)
+- Service area (2026-10-10, owner-corrected): St. Lucie County ONLY, incl. Lakewood Park. 14 zips: 34945, 34946, 34947, 34949, 34950, 34951, 34952, 34953, 34981, 34982, 34983, 34984, 34986, 34987. All Vero Beach / Indian River County excluded. In-area rule: verified county = St. Lucie wins; zip list only decides when county is unknown (protects cross-boundary zips)
 - Acreage: Florida Dept. of Revenue statewide parcel service (ArcGIS FeatureServer, county property-appraiser tax-roll data) — nearest parcel centroid to geocoded point, `LND_SQFOOT / 43560`
 - Results cached in `properties` collection (address_key); service config in `config` collection; leads in `quotes`
 - Design: obsidian-forest (#0B1510) + emerald (#10B981), Lora/DM Sans/IBM Plex Mono, motion/react reveals, lenis smooth scroll

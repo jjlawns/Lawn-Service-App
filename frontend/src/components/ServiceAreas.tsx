@@ -2,11 +2,11 @@ import { motion } from "motion/react";
 import type { ServiceConfig } from "@/lib/types";
 
 const REGIONS = [
-  { name: "Port St. Lucie", zips: ["34952", "34953", "34983", "34984", "34985", "34986", "34987", "34988"] },
-  { name: "Fort Pierce", zips: ["34945", "34946", "34947", "34948", "34950", "34951", "34954", "34981", "34982"] },
+  { name: "Port St. Lucie", zips: ["34952", "34953", "34983", "34984", "34986", "34987"] },
+  { name: "Fort Pierce", zips: ["34945", "34946", "34947", "34950", "34981", "34982"] },
+  { name: "Lakewood Park", zips: ["34951"] },
   { name: "Hutchinson Island", zips: ["34949"] },
-  { name: "Tradition & St. Lucie West", zips: ["34986", "34987", "34990"] },
-  { name: "North Vero Beach", zips: ["32960", "32962", "32963", "32967"] },
+  { name: "Tradition & St. Lucie West", zips: ["34986", "34987"] },
 ];
 
 const reveal = {
@@ -38,7 +38,7 @@ export function ServiceAreas({ config }: { config: ServiceConfig }) {
           transition={{ duration: 0.6, delay: 0.08 }}
           className="mt-4 max-w-2xl font-heading text-3xl font-medium tracking-[-0.02em] text-[#F3F7F4] sm:text-4xl"
         >
-          Every address in St. Lucie County, plus North Vero.
+          Every address in St. Lucie County — Lakewood Park included.
         </motion.h2>
 
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">

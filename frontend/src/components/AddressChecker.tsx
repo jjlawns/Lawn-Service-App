@@ -272,8 +272,8 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                     </span>
                     <p className="text-sm leading-relaxed text-[#A2B4AA]">
                       {result.zip
-                        ? `${result.zip} isn't on our current route map. We cover St. Lucie County and the northern end of Vero Beach — and we're expanding.`
-                        : "We couldn't place that address on our route map. We cover St. Lucie County and the northern end of Vero Beach."}{" "}
+                        ? `${result.zip} isn't on our current route map. We cover St. Lucie County only, including Lakewood Park — and we're expanding.`
+                        : "We couldn't place that address on our route map. We cover St. Lucie County only, including Lakewood Park."}{" "}
                       Call us and we'll tell you honestly whether we can make it work.
                     </p>
                     <a

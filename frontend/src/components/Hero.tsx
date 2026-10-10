@@ -40,7 +40,7 @@ export function Hero({ config }: { config: ServiceConfig }) {
             className="mb-6 font-mono text-[11px] uppercase tracking-[0.2em] text-emerald-400 sm:text-xs"
             data-testid="hero-overline"
           >
-            Estate turf &amp; lawn management / St. Lucie &amp; North Vero Beach
+            Estate turf &amp; lawn management / St. Lucie County, Florida
           </motion.p>
 
           <h1
@@ -74,9 +74,9 @@ export function Hero({ config }: { config: ServiceConfig }) {
             className="mt-6 max-w-xl text-base leading-relaxed text-[#A2B4AA] md:text-lg"
             data-testid="hero-subtitle"
           >
-            Type your address. We verify it against our St. Lucie County &amp; North Vero Beach
-            routes, pull your lot size from county property records, and price your cut — in
-            about five seconds. Residential and commercial.
+            Type your address. We verify it against our St. Lucie County routes, pull your
+            lot size from county property records, and price your cut — in about five
+            seconds. Residential and commercial.
           </motion.p>
 
           <motion.div
@@ -127,7 +127,7 @@ export function Hero({ config }: { config: ServiceConfig }) {
                 ))}
               </ul>
               <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#A2B4AA]">
-                {config.zips.length} zip codes on route · month-to-month, no lock-in
+                Serving St. Lucie County · month-to-month, no lock-in
               </p>
             </div>
           </motion.div>
