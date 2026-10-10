@@ -42,25 +42,25 @@ export const DEFAULT_CONFIG: ServiceConfig = {
     "34945", "34946", "34947", "34949", "34950", "34951", "34952",
     "34953", "34981", "34982", "34983", "34984", "34986", "34987",
   ],
-  base_price: 28,
+  base_price: 35,
   per_acre: 70,
   included_acres: 0.25,
-  min_price: 28,
+  min_price: 35,
   easement_fee: 5,
   monthly_min: 100,
 };
 
-// One cut for the lot (sub-acre lots include county easement upkeep); monthly plan = 3
-// cuts/month, one-time cleanup prices higher. Overgrown first cuts price at a multiple of
-// a cut, so the overgrowth fee is (multiplier - 1) extra cuts.
+// One cut for the lot: base + per-acre beyond the included amount, plus the easement fee
+// on small lots (under 0.25 ac). Monthly = 3 cuts, with a flat small-lot rate under 0.2 ac.
 export function cutPrice(config: ServiceConfig, acres: number): number {
   const billable = Math.max(0, acres - config.included_acres);
   let cut = Math.max(config.min_price, config.base_price + config.per_acre * billable);
-  if (acres < 1) cut += config.easement_fee;
+  if (acres < 0.25) cut += config.easement_fee;
   return Math.round(cut);
 }
 
-export function monthlyPrice(config: ServiceConfig, cut: number): number {
+export function monthlyPrice(config: ServiceConfig, cut: number, acres: number): number {
+  if (acres < 0.2) return config.monthly_min;
   return Math.max(config.monthly_min, cut * 3);
 }
 

@@ -38,10 +38,10 @@ DEFAULT_CONFIG = {
         "34945", "34946", "34947", "34949", "34950", "34951", "34952",
         "34953", "34981", "34982", "34983", "34984", "34986", "34987",
     ],
-    "base_price": 28.0,
+    "base_price": 35.0,
     "per_acre": 70.0,
     "included_acres": 0.25,
-    "min_price": 28.0,
+    "min_price": 35.0,
     "easement_fee": 5.0,
     "monthly_min": 100.0,
 }
@@ -106,9 +106,9 @@ class Quote(QuoteRequestBody):
 def cut_estimate(cfg: dict, acres: float) -> float:
     billable = max(0.0, acres - cfg["included_acres"])
     cut = max(cfg["min_price"], cfg["base_price"] + cfg["per_acre"] * billable)
-    if acres < 1.0:
-        cut += cfg["easement_fee"]  # county easements on sub-acre lots are maintained too
-    return float(round(cut))
+    if acres < 0.25:
+        cut += cfg["easement_fee"]  # small lots include county easement upkeep
+    return float(math.floor(cut + 0.5))
 
 
 def normalize_address(address: str) -> str:

@@ -23,7 +23,7 @@ User choices: zip-code-list service area (St. Lucie County + northernmost Vero B
 ## Implemented (2026-10-10)
 - Kinetic split hero with masked line reveal, parallax live rate card, editorial marquee, bento grid, route-map zip chips, footer with click-to-call
 - Address checker: full address or zip-only; city optional (auto-retries with "St. Lucie County, FL" context); in/out-of-area badge; county acreage with slider override
-- Pricing: cut price = max($28, base $28 + $70/acre beyond 0.25 ac) + $5 easement fee on lots under 1 acre; monthly = max($100 floor, 3×cut). Plans: Monthly Service (3 cuts/month, every 10 days summer / 14 winter, month-to-month) and One-Time Cleanup (1.5× cut). Overgrowth first-cut multipliers: 2–4 wks 2×, 1–2 mo 3×, 2+ mo 4×. All PSL zips serviced (34952/34953/34983–34988/34990) + Fort Pierce + Hutchinson Island + North Vero Beach
+- Pricing (owner-corrected 2026-10-10): cut = max($35, $35 + $70/acre beyond 0.25 ac) + $5 easement fee under 0.25 ac. Monthly = 3×cut, flat $100/mo for lots under 0.2 ac. Verified: 0.18ac→$100/mo, 0.23ac→$120/mo, 0.5ac→$53/cut ($159/mo), 1ac→$88/cut ($264/mo). One-Time Cleanup 1.5× cut. Overgrowth first-cut multipliers: 2–4 wks 2×, 1–2 mo 3×, 2+ mo 4×
 - Standard service copy: mow, weed eat, edge, blow off, weed control; no debris vacuuming, no bush hogging; residential & commercial. Phone (772) 940-4424
 - Quote request dialog (name/phone/email/address/notes + plan/overgrowth) → MongoDB, success toast
 - Owner settings drawer (gear in navbar): edit phone, zips, base/per-acre/min price, included acres — live

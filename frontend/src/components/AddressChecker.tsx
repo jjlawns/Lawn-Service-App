@@ -58,7 +58,7 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
   const cut = cutPrice(config, acres);
   const growthMult = OVERGROWTH_OPTIONS.find((o) => o.key === overgrowth)?.multiplier ?? 1;
   const growthFee = overgrowthFee(cut, growthMult);
-  const monthly = monthlyPrice(config, cut);
+  const monthly = monthlyPrice(config, cut, acres);
   const price = plan === "monthly" ? monthly + growthFee : onetimePrice(cut) + growthFee;
   const fillPct = ((acres - MIN_ACRES) / (MAX_ACRES - MIN_ACRES)) * 100;
 
@@ -242,9 +242,11 @@ export function AddressChecker({ config }: { config: ServiceConfig }) {
                         </p>
                         <p className="mt-1 text-xs text-[#5C6F64]">
                           {plan === "monthly"
-                            ? `≈3 cuts/month at $${cut}/cut${
-                                growthFee > 0 ? ` · then $${monthly}/mo after` : ""
-                              } · final quote confirmed on walkthrough`
+                            ? acres < 0.2
+                              ? "Small-lot monthly rate · final quote confirmed on walkthrough"
+                              : `≈3 cuts/month at $${cut}/cut${
+                                  growthFee > 0 ? ` · then $${monthly}/mo after` : ""
+                                } · final quote confirmed on walkthrough`
                             : "Full cleanup pass · final quote confirmed on walkthrough"}
                         </p>
                         {growthFee > 0 && (
