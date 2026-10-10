@@ -11,12 +11,12 @@ export function Footer({ config }: { config: ServiceConfig }) {
           <div className="flex items-center gap-3">
             <Logo className="h-9 w-9 text-emerald-400" />
             <span className="font-heading text-lg font-semibold uppercase tracking-[0.22em] text-[#F3F7F4]">
-              Verdant Coast
+              J&amp;J Lawn &amp; Landscape
             </span>
           </div>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-[#A2B4AA]">
-            Architectural turf &amp; coastal estate lawn care for St. Lucie County and the
-            northern end of Vero Beach, Florida.
+            Lawn &amp; landscape care for homes and businesses across St. Lucie County and
+            the northern end of Vero Beach, Florida.
           </p>
         </div>
 
@@ -35,7 +35,7 @@ export function Footer({ config }: { config: ServiceConfig }) {
       </div>
       <div className="border-t border-[#1E3328]">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 font-mono text-[11px] uppercase tracking-[0.16em] text-[#5C6F64] sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <span>© {new Date().getFullYear()} Verdant Coast Turf &amp; Grounds</span>
+          <span>© {new Date().getFullYear()} J&amp;J Lawn &amp; Landscape</span>
           <span>Estimates calibrated from county property records</span>
         </div>
       </div>

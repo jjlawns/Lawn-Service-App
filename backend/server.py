@@ -221,7 +221,7 @@ api_router = APIRouter(prefix="/api")
 
 @api_router.get("/")
 async def root():
-    return {"message": "Verdant Coast API"}
+    return {"message": "J&J Lawn & Landscape API"}
 
 
 @api_router.get("/config", response_model=ServiceConfig)

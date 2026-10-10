@@ -15,7 +15,7 @@ export function Navbar({ config }: { config: ServiceConfig }) {
         <a href="#top" className="flex items-center gap-3" data-testid="brand-link">
           <Logo className="h-8 w-8 text-emerald-400" />
           <span className="font-heading text-sm font-semibold uppercase tracking-[0.22em] text-[#F3F7F4] sm:text-base">
-            Verdant Coast
+            J&amp;J Lawn &amp; Landscape
           </span>
         </a>
 

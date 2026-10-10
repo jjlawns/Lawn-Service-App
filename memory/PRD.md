@@ -1,4 +1,4 @@
-# Verdant Coast Turf & Grounds — PRD
+# J&J Lawn & Landscape — PRD
 
 ## Original problem statement
 "An app that customers can search their address in St Lucie County and tell them if they're in our service area and also give them an estimated price for their lawn service."
